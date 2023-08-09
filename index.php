@@ -10,7 +10,8 @@
 
 <body>
     <script type="importmap">{ "imports": {
-            "three": "./node_modules/three/build/three.module.js"
+            "three": "./node_modules/three/build/three.module.js",
+            "PointerLockControls": "./node_modules/three/examples/jsm/controls/PointerLockControls.js"
     }}</script>
     <script type="module" src="app/main.js"></script>
 </body>
