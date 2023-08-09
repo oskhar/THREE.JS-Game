@@ -1,11 +1,14 @@
 import * as THREE from 'three';
 import { PointerLockControls } from 'PointerLockControls';
+import * as CANNON from 'cannon-es';
 
 class Core {
     constructor() {
-        this.scene = new THREE.Scene();
+        this.scene = new WorldScene();
         this.camera = new UserCamera(45, window.innerWidth / window.innerHeight, 1, 500);
         this.renderer = new THREE.WebGLRenderer();
+        this.world = new CANNON.World();
+        this.world.gravity.set(0, -9.82, 0); // Set gravity
         this.keyboard = {};
 
         this.setupControls();
@@ -35,10 +38,6 @@ class Core {
     setupRenderer() {
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(this.renderer.domElement);
-    }
-
-    setupCamera() {
-        this.camera.position.y = 3;
     }
 
     setupListeners() {
@@ -113,7 +112,50 @@ class Core {
 class UserCamera extends THREE.PerspectiveCamera {
     constructor(fov, aspect, near, far) {
         super(fov, aspect, near, far);
+        this.position.y = 3;
     }
+}
+
+class WorldScene extends THREE.Scene {
+    constructor()
+    {
+        super();
+
+        this.setupSkybox(); // Add Skybox
+        this.setupFloor(); // Add Floor
+        this.setupBlenderObject(); // Add blender Object
+    }
+
+    setupSkybox ()
+    {
+        this.skyboxTexture = new THREE.CubeTextureLoader().load([
+            './assets/images/skybox/px.png',
+            './assets/images/skybox/nx.png',
+            './assets/images/skybox/py.png',
+            './assets/images/skybox/ny.png',
+            './assets/images/skybox/pz.png',
+            './assets/images/skybox/nz.png',
+        ]);
+        this.background = this.skyboxTexture;
+    }
+
+    setupFloor ()
+    {
+        const floorGeometry = new THREE.PlaneGeometry(100, 100);
+        const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x808080, side: THREE.DoubleSide });
+        const floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
+        floorMesh.rotation.x = -Math.PI / 2; // Rotate to make it a floor
+        this.add(floorMesh);
+    }
+
+    setupBlenderObject ()
+    {
+        const boxGeometry = new THREE.BoxGeometry(2, 2, 2);
+        const boxMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+        this.boxMesh = new THREE.Mesh(boxGeometry, boxMaterial);
+        this.add(this.boxMesh);
+    }
+
 }
 
 const core = new Core();
