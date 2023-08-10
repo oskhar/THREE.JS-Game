@@ -7,14 +7,11 @@ class Core {
         this.scene = new WorldScene();
         this.camera = new UserCamera(45, window.innerWidth / window.innerHeight, 1, 500);
         this.renderer = new THREE.WebGLRenderer();
-        this.world = new CANNON.World();
-        this.world.gravity.set(0, -9.82, 0); // Set gravity
         this.keyboard = {};
 
         this.setupControls();
         this.setupScene();
         this.setupRenderer();
-        this.setupCamera();
         this.setupListeners();
         this.animate();
     }
@@ -67,7 +64,7 @@ class Core {
     animate() {
 
         const time = performance.now();
-        const delta = (time - this.prevTime) / 1000;
+        const delta = (time - this.prevTime) / 100;
 
         const velocity = new THREE.Vector3();
         const direction = new THREE.Vector3();
@@ -95,12 +92,6 @@ class Core {
         if (moveLeft) this.camera.rotation.y += 0.02;
         if (moveRight) this.camera.rotation.y -= 0.02;
         console.log(this.camera.position.x +" - "+ this.camera.position.z);
-
-        // ... calculate other movements ...
-
-        // this.controls.getObject().position.copy(this.controls.getObject().position);
-
-        // Update other animations or logic here
 
         this.prevTime = time;
 
@@ -153,6 +144,7 @@ class WorldScene extends THREE.Scene {
         const boxGeometry = new THREE.BoxGeometry(2, 2, 2);
         const boxMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
         this.boxMesh = new THREE.Mesh(boxGeometry, boxMaterial);
+        this.boxMesh.position.set(2, 5, 2);
         this.add(this.boxMesh);
     }
 
