@@ -1,37 +1,30 @@
 import * as THREE from 'https://unpkg.com/three@0.122.0/build/three.module.js';
 import * as CANNON from 'cannon-es';
 import { PointerLockControlsCannon } from "./PointerLockControlsCannon.js";
-// import { PointerLockControls } from 'PointerLockControls';
 
-    /**
-     * Example of a really barebones version of a fps game.
-     */
+// three.js variables
+let camera, scene, renderer
+let material
 
-    // three.js variables
-    let camera, scene, renderer
-    let material
+// cannon.js variables
+let world
+let controls
+const timeStep = 1 / 60
+let lastCallTime = performance.now()
+let sphereShape
+let sphereBody
+let physicsMaterial
+const boxes = []
+const boxMeshes = []
 
-    // cannon.js variables
-    let world
-    let controls
-    const timeStep = 1 / 60
-    let lastCallTime = performance.now()
-    let sphereShape
-    let sphereBody
-    let physicsMaterial
-    const balls = []
-    const ballMeshes = []
-    const boxes = []
-    const boxMeshes = []
+const instructions = document.getElementById('instructions')
 
-    const instructions = document.getElementById('instructions')
+initThree()
+initCannon()
+initPointerLock()
+animate()
 
-    initThree()
-    initCannon()
-    initPointerLock()
-    animate()
-
-    function initThree() {
+function initThree() {
     // Camera
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
 
@@ -70,7 +63,7 @@ import { PointerLockControlsCannon } from "./PointerLockControlsCannon.js";
     scene.add(spotlight)
 
     // Generic material
-    material = new THREE.MeshStandardMaterial({ color: 0xdddddd })
+    material = new THREE.MeshStandardMaterial({ color: 0x00ffff })
 
     // Floor
     const floorGeometry = new THREE.PlaneGeometry(300, 300, 100, 100)
@@ -80,15 +73,15 @@ import { PointerLockControlsCannon } from "./PointerLockControlsCannon.js";
     scene.add(floor)
 
     window.addEventListener('resize', onWindowResize)
-    }
+}
 
-    function onWindowResize() {
+function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight
     camera.updateProjectionMatrix()
     renderer.setSize(window.innerWidth, window.innerHeight)
-    }
+}
 
-    function initCannon() {
+function initCannon() {
     world = new CANNON.World()
 
     // Tweak contact properties.
@@ -206,54 +199,9 @@ import { PointerLockControlsCannon } from "./PointerLockControlsCannon.js";
 
         last = boxBody
     }
+}
 
-    // The shooting balls
-    const shootVelocity = 15
-    const ballShape = new CANNON.Sphere(0.2)
-    const ballGeometry = new THREE.SphereGeometry(ballShape.radius, 32, 32)
-
-    // Returns a vector pointing the the diretion the camera is at
-    function getShootDirection() {
-        const vector = new THREE.Vector3(0, 0, 1)
-        vector.unproject(camera)
-        const ray = new THREE.Ray(sphereBody.position, vector.sub(sphereBody.position).normalize())
-        return ray.direction
-    }
-
-    window.addEventListener('click', (event) => {
-        if (!controls.enabled) {
-        return
-        }
-
-        const ballBody = new CANNON.Body({ mass: 1 })
-        ballBody.addShape(ballShape)
-        const ballMesh = new THREE.Mesh(ballGeometry, material)
-
-        ballMesh.castShadow = true
-        ballMesh.receiveShadow = true
-
-        world.addBody(ballBody)
-        scene.add(ballMesh)
-        balls.push(ballBody)
-        ballMeshes.push(ballMesh)
-
-        const shootDirection = getShootDirection()
-        ballBody.velocity.set(
-        shootDirection.x * shootVelocity,
-        shootDirection.y * shootVelocity,
-        shootDirection.z * shootVelocity
-        )
-
-        // Move the ball outside the player sphere
-        const x = sphereBody.position.x + shootDirection.x * (sphereShape.radius * 1.02 + ballShape.radius)
-        const y = sphereBody.position.y + shootDirection.y * (sphereShape.radius * 1.02 + ballShape.radius)
-        const z = sphereBody.position.z + shootDirection.z * (sphereShape.radius * 1.02 + ballShape.radius)
-        ballBody.position.set(x, y, z)
-        ballMesh.position.copy(ballBody.position)
-    })
-    }
-
-    function initPointerLock() {
+function initPointerLock() {
     controls = new PointerLockControlsCannon(camera, sphereBody)
     scene.add(controls.getObject())
 
@@ -282,12 +230,6 @@ import { PointerLockControlsCannon } from "./PointerLockControlsCannon.js";
     if (controls.enabled) {
         world.step(timeStep, dt)
 
-        // Update ball positions
-        for (let i = 0; i < balls.length; i++) {
-        ballMeshes[i].position.copy(balls[i].position)
-        ballMeshes[i].quaternion.copy(balls[i].quaternion)
-        }
-
         // Update box positions
         for (let i = 0; i < boxes.length; i++) {
         boxMeshes[i].position.copy(boxes[i].position)
@@ -297,4 +239,4 @@ import { PointerLockControlsCannon } from "./PointerLockControlsCannon.js";
 
     controls.update(dt)
     renderer.render(scene, camera)
-    }
+}

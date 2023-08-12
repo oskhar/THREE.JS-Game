@@ -9,16 +9,16 @@
 </head>
 
 <body>
-    <!-- <script type="importmap">{ "imports": {
+    <script type="importmap">{ "imports": {
             "three": "./node_modules/three/build/three.module.js",
             "PointerLockControls": "./node_modules/three/examples/jsm/controls/PointerLockControls.js",
             "cannon-es": "./node_modules/cannon-es/dist/cannon-es.js",
             "three-stats": "./node_modules/three/examples/jsm/libs/stats.module.js"
-    }}</script> -->
+    }}</script>
     <div id="instructions">
-        <span>Click to play</span>
+        <span>Klik untuk bermain</span>
         <br />
-        (W,A,S,D = Move, SPACE = Jump, MOUSE = Look)
+        (W,A,S,D = Bergerak, SPACE = Lompat, MOUSE = Mengalihkan pandangan)
     </div>
     <!-- <script type="module" src="app/PointerLockControlsCannon.js"></script> -->
     <script type="module" src="app/main.js"></script>
