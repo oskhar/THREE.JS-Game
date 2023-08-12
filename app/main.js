@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 import { PointerLockControls } from 'PointerLockControls';
-import { Stats } from 'three-stats';
 
 class Core {
     constructor() {
