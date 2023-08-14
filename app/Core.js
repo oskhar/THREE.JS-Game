@@ -1,4 +1,4 @@
-import * as THREE from 'https://unpkg.com/three@0.122.0/build/three.module.js';
+import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 import { PointerLockControlsCannon } from "./PointerLockControlsCannon.js";
 import { UserCamera } from './UserCamera.js';
@@ -16,7 +16,7 @@ export class Core extends THREE.WebGLRenderer{
 
         // Initial scene world
         this.scene = new WorldScene();
-        this.world = new WorldPhysics();
+        this.world = new WorldPhysics(35);
 
         this.setSize(window.innerWidth, window.innerHeight);
         this.setClearColor(this.scene.fog.color);
@@ -70,36 +70,22 @@ export class Core extends THREE.WebGLRenderer{
     }
 
     setObjectBlender () {
-        // Add normal boxes
-        const halfExtents = new CANNON.Vec3(1, 1, 1)
-        const boxShape = new CANNON.Box(halfExtents)
-        const boxGeometry = new THREE.BoxGeometry(halfExtents.x * 2, halfExtents.y * 2, halfExtents.z * 2)
 
-        for (let i = 0; i < 7; i++) {
-            const boxBody = new CANNON.Body({ mass: 5 })
-            boxBody.addShape(boxShape)
-            const boxMesh = new THREE.Mesh(boxGeometry, this.scene.materialA)
-
-            const x = (Math.random() - 0.5) * 20
-            const y = (Math.random() - 0.5) * 1 + 1
-            const z = (Math.random() - 0.5) * 20
-
-            boxBody.position.set(x, y, z)
-            boxMesh.position.copy(boxBody.position)
-
-            boxMesh.castShadow = true
-            boxMesh.receiveShadow = true
-
-            this.world.addBody(boxBody)
-            this.scene.add(boxMesh)
-            this.boxes.push(boxBody)
-            this.boxMeshes.push(boxMesh)
-        }
+        // Create cubes
+        this.createCube({
+            positionX: 0,
+            positionY: 30,
+            positionZ: 0,
+            scaleX: 10,
+            scaleY: 2,
+            scaleZ: 2,
+            mass: 0,
+        });
 
         // Add linked boxes
         const size = 0.5
-        const mass = 0.3
-        const space = 0.1 * size
+        const mass = 0.1
+        const space = 0.01 * size
         const N = 5
         const halfExtents2 = new CANNON.Vec3(size, size, size * 0.1)
         const boxShape2 = new CANNON.Box(halfExtents2)
@@ -108,10 +94,10 @@ export class Core extends THREE.WebGLRenderer{
         let last
         for (let i = 0; i < N; i++) {
             // Make the fist one static to support the others
-            const boxBody = new CANNON.Body({ mass: i === 0 ? 0 : mass })
+            const boxBody = new CANNON.Body({ mass: i === 0 || i === N-1 ? 0 : mass })
             boxBody.addShape(boxShape2)
             const boxMesh = new THREE.Mesh(boxGeometry2, this.scene.materialA)
-            boxBody.position.set(5, (N - i) * (size * 2 + 2 * space) + size * 2 + space, 0)
+            boxBody.position.set((N - i) * (size * 2 + 2 * space) + size * 2 + space, 5, 0)
             boxBody.linearDamping = 0.01
             boxBody.angularDamping = 0.01
 
@@ -145,6 +131,32 @@ export class Core extends THREE.WebGLRenderer{
         }
     }
 
+    // create
+    createCube (paramObject) {
+        // Add normal boxes
+        const halfExtents = new CANNON.Vec3(1, 1, 1)
+        const boxShape = new CANNON.Box(halfExtents)
+        const boxGeometry = new THREE.BoxGeometry(halfExtents.x * paramObject.scaleX, halfExtents.y * paramObject.scaleY, halfExtents.z * paramObject.scaleZ)
+        const boxBody = new CANNON.Body({ mass: paramObject.mass })
+        boxBody.addShape(boxShape)
+        const boxMesh = new THREE.Mesh(boxGeometry, this.scene.materialB)
+
+        const x = paramObject.positionX
+        const y = paramObject.positionY
+        const z = paramObject.positionZ
+
+        boxBody.position.set(x, y, z)
+        boxMesh.position.copy(boxBody.position)
+
+        boxMesh.castShadow = true
+        boxMesh.receiveShadow = true
+
+        this.world.addBody(boxBody)
+        this.scene.add(boxMesh)
+        this.boxes.push(boxBody)
+        this.boxMeshes.push(boxMesh)
+    }
+
     animate () {
         requestAnimationFrame(this.animate.bind(this));
     
@@ -159,6 +171,10 @@ export class Core extends THREE.WebGLRenderer{
             for (let i = 0; i < this.boxes.length; i++) {
                 this.boxMeshes[i].position.copy(this.boxes[i].position);
                 this.boxMeshes[i].quaternion.copy(this.boxes[i].quaternion);
+            }
+            if (this.controls.cannonBody.position.y < 2) {
+                // this.controls.unlock();
+                // alert('game_over');
             }
         }
     

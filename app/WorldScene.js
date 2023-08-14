@@ -1,4 +1,4 @@
-import * as THREE from 'https://unpkg.com/three@0.122.0/build/three.module.js';
+import * as THREE from 'three';
 
 export class WorldScene extends THREE.Scene {
     constructor () {
@@ -8,6 +8,7 @@ export class WorldScene extends THREE.Scene {
 
         // Opstions material in the world
         this.materialA = new THREE.MeshStandardMaterial({ color: 0x00ffff });
+        this.materialB = new THREE.MeshStandardMaterial({ color: 0x7777ff });
 
         // Runing setter method
         this.setLight();

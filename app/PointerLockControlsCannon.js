@@ -19,6 +19,7 @@ class PointerLockControlsCannon extends THREE.EventDispatcher {
       this.yawObject = new THREE.Object3D()
       this.yawObject.position.y = 2
       this.yawObject.add(this.pitchObject)
+      this.yawObject.position.copy(this.cannonBody.position)
   
       this.quaternion = new THREE.Quaternion()
   

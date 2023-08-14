@@ -1,7 +1,7 @@
 import * as CANNON from 'cannon-es';
 
 export class WorldPhysics extends CANNON.World {
-    constructor () {
+    constructor (paramY) {
         super();
         // Tweak contact properties.
         // Contact stiffness - use to make softer/harder contacts
@@ -24,7 +24,7 @@ export class WorldPhysics extends CANNON.World {
         
         // Runing setter method
         this.setSlipperyMaterial();
-        this.setUserCollision();
+        this.setUserCollision(paramY);
         this.setGroundPlane();
     }
 
@@ -39,11 +39,11 @@ export class WorldPhysics extends CANNON.World {
         this.addContactMaterial(physics_physics);
     }
 
-    setUserCollision () {
+    setUserCollision (paramY) {
         const radius = 1.3;
         const sphereShape = new CANNON.Sphere(radius);
         this.sphereBody.addShape(sphereShape);
-        this.sphereBody.position.set(0, 5, 0);
+        this.sphereBody.position.set(0, paramY, 0);
         this.sphereBody.linearDamping = 0.9;
         this.addBody(this.sphereBody);
     }
