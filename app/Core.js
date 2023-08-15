@@ -72,7 +72,7 @@ export class Core extends THREE.WebGLRenderer{
     setObjectBlender (listBox) {
 
         for (let i = 0; i < listBox.length; i++) {
-            createBox(listBox[i]);
+            this.createBox(listBox[i]);
         }
         // Add linked boxes
         const size = 0.5

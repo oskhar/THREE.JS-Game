@@ -23,7 +23,7 @@
         (W,A,S,D = Bergerak, SPACE = Lompat, MOUSE = Mengalihkan pandangan)
     </div>
     <!-- <script type="module" src="app/PointerLockControlsCannon.js"></script> -->
-    <script type="module" src="app/Core.js"></script>
+    <script type="module" src="app/map/Level_1.js"></script>
 </body>
 
 </html>

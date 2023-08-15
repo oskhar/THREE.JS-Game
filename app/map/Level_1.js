@@ -1,4 +1,12 @@
-import { Core } from "../Core";
+import * as THREE from 'three';
+import { Core } from "../Core.js";
+
+const materialBlue = new THREE.MeshStandardMaterial({ color: 0x7777ff });
+const materialRed = new THREE.MeshStandardMaterial({ color: 0xE42E22 });
+const materialGreen = new THREE.MeshStandardMaterial({ color: 0x67F15B });
+const materialYellow = new THREE.MeshStandardMaterial({ color: 0xE4BA22 });
+const materialDarkBlue = new THREE.MeshStandardMaterial({ color: 0x1868A1 });
+const materialSkyBlue = new THREE.MeshStandardMaterial({ color: 0x92C8EF });
 
 const listBox = [
     {
@@ -9,7 +17,7 @@ const listBox = [
         scaleY: 10,
         scaleZ: 10,
         mass: 0,
-        material: this.scene.materialDarkBlue,
+        material: materialDarkBlue,
     },
     {
         positionX: 0,
@@ -20,7 +28,7 @@ const listBox = [
         scaleY: 10,
         scaleZ: 10,
         mass: 0,
-        material: this.scene.materialBlue,
+        material: materialBlue,
     },
     {
         positionX: -20,
@@ -31,7 +39,7 @@ const listBox = [
         scaleY: 10,
         scaleZ: 10,
         mass: 0,
-        material: this.scene.materialBlue,
+        material: materialBlue,
     },
     {
         positionX: -5,
@@ -41,7 +49,7 @@ const listBox = [
         scaleY: 2,
         scaleZ: 10,
         mass: 3,
-        material: this.scene.materialGreen,
+        material: materialGreen,
         gravity: 10,
     },
     {

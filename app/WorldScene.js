@@ -8,12 +8,6 @@ export class WorldScene extends THREE.Scene {
 
         // Opstions material in the world
         this.materialA = new THREE.MeshStandardMaterial({ color: 0x00ffff });
-        this.materialBlue = new THREE.MeshStandardMaterial({ color: 0x7777ff });
-        this.materialRed = new THREE.MeshStandardMaterial({ color: 0xE42E22 });
-        this.materialGreen = new THREE.MeshStandardMaterial({ color: 0x67F15B });
-        this.materialYellow = new THREE.MeshStandardMaterial({ color: 0xE4BA22 });
-        this.materialDarkBlue = new THREE.MeshStandardMaterial({ color: 0x1868A1 });
-        this.materialSkyBlue = new THREE.MeshStandardMaterial({ color: 0x92C8EF });
 
         // Runing setter method
         this.setLight();
