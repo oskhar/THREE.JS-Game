@@ -8,7 +8,12 @@ export class WorldScene extends THREE.Scene {
 
         // Opstions material in the world
         this.materialA = new THREE.MeshStandardMaterial({ color: 0x00ffff });
-        this.materialB = new THREE.MeshStandardMaterial({ color: 0x7777ff });
+        this.materialBlue = new THREE.MeshStandardMaterial({ color: 0x7777ff });
+        this.materialRed = new THREE.MeshStandardMaterial({ color: 0xE42E22 });
+        this.materialGreen = new THREE.MeshStandardMaterial({ color: 0x67F15B });
+        this.materialYellow = new THREE.MeshStandardMaterial({ color: 0xE4BA22 });
+        this.materialDarkBlue = new THREE.MeshStandardMaterial({ color: 0x1868A1 });
+        this.materialSkyBlue = new THREE.MeshStandardMaterial({ color: 0x92C8EF });
 
         // Runing setter method
         this.setLight();
@@ -20,7 +25,7 @@ export class WorldScene extends THREE.Scene {
         this.add(ambientLight);
     
         const spotlight = new THREE.SpotLight(0xffffff, 0.9, 0, Math.PI / 4, 1);
-        spotlight.position.set(10, 30, 20);
+        spotlight.position.set(10, 60, 20);
         spotlight.target.position.set(0, 0, 0);
     
         spotlight.castShadow = true;

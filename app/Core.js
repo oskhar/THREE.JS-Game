@@ -6,7 +6,7 @@ import { WorldScene } from './WorldScene.js';
 import { WorldPhysics } from './WorldPhysics.js';
 
 export class Core extends THREE.WebGLRenderer{
-    constructor () {
+    constructor (listBox) {
 
         // Set renderer (This class)
         super({ antialias: true });
@@ -16,7 +16,7 @@ export class Core extends THREE.WebGLRenderer{
 
         // Initial scene world
         this.scene = new WorldScene();
-        this.world = new WorldPhysics(35);
+        this.world = new WorldPhysics(20);
 
         this.setSize(window.innerWidth, window.innerHeight);
         this.setClearColor(this.scene.fog.color);
@@ -33,7 +33,7 @@ export class Core extends THREE.WebGLRenderer{
         // Runing setter method
         this.setControls();
         this.setListener();
-        this.setObjectBlender();
+        this.setObjectBlender(listBox);
         this.animate();
     }
 
@@ -69,19 +69,11 @@ export class Core extends THREE.WebGLRenderer{
         this.controls.addEventListener('unlock', this.onUnlock.bind(this));
     }
 
-    setObjectBlender () {
+    setObjectBlender (listBox) {
 
-        // Create cubes
-        this.createCube({
-            positionX: 0,
-            positionY: 30,
-            positionZ: 0,
-            scaleX: 10,
-            scaleY: 2,
-            scaleZ: 2,
-            mass: 0,
-        });
-
+        for (let i = 0; i < listBox.length; i++) {
+            createBox(listBox[i]);
+        }
         // Add linked boxes
         const size = 0.5
         const mass = 0.1
@@ -132,21 +124,50 @@ export class Core extends THREE.WebGLRenderer{
     }
 
     // create
-    createCube (paramObject) {
+    createBox (paramObject) {
+        // Set default parameter
+        const defaultParam = {
+            positionX: 0,
+            positionY: 0,
+            positionZ: 0,
+            rotationX: 0,
+            rotationY: 0,
+            rotationZ: 0,
+            scaleX: 2,
+            scaleY: 2,
+            scaleZ: 2,
+            mass: 5,
+            material: this.scene.materialA,
+            gravity: -9.81,
+        }
+        const fixParam = Object.assign(defaultParam, paramObject);
+        
         // Add normal boxes
-        const halfExtents = new CANNON.Vec3(1, 1, 1)
+        const halfExtents = new CANNON.Vec3(0.5 * fixParam.scaleX, 0.5 * fixParam.scaleY, 0.5 * fixParam.scaleZ)
         const boxShape = new CANNON.Box(halfExtents)
-        const boxGeometry = new THREE.BoxGeometry(halfExtents.x * paramObject.scaleX, halfExtents.y * paramObject.scaleY, halfExtents.z * paramObject.scaleZ)
-        const boxBody = new CANNON.Body({ mass: paramObject.mass })
-        boxBody.addShape(boxShape)
-        const boxMesh = new THREE.Mesh(boxGeometry, this.scene.materialB)
+        const boxGeometry = new THREE.BoxGeometry(halfExtents.x * 2, halfExtents.y * 2, halfExtents.z * 2)
+        const boxBody = new CANNON.Body({ mass: fixParam.mass })
+        boxBody.addShape(boxShape);
+        const boxMesh = new THREE.Mesh(boxGeometry, fixParam.material)
 
-        const x = paramObject.positionX
-        const y = paramObject.positionY
-        const z = paramObject.positionZ
+        // Set position
+        boxBody.position.set(
+            fixParam.positionX,
+            fixParam.positionY,
+            fixParam.positionZ
+        );
+        const customGravity = new CANNON.Vec3(0, -0.01, 0); // Ubah kecepatan jatuh sesuai dengan kebutuhan Anda
+        boxBody.applyForce(customGravity, boxBody.position);
+        boxMesh.position.copy(boxBody.position);
 
-        boxBody.position.set(x, y, z)
-        boxMesh.position.copy(boxBody.position)
+        const rotationQuaternion = new CANNON.Quaternion();
+        rotationQuaternion.setFromAxisAngle(new CANNON.Vec3(
+            fixParam.rotationX,
+            fixParam.rotationY,
+            fixParam.rotationZ
+        ), Math.PI / 4);
+        boxBody.quaternion.copy(rotationQuaternion);
+        boxMesh.quaternion.copy(boxBody.quaternion);
 
         boxMesh.castShadow = true
         boxMesh.receiveShadow = true
@@ -173,8 +194,9 @@ export class Core extends THREE.WebGLRenderer{
                 this.boxMeshes[i].quaternion.copy(this.boxes[i].quaternion);
             }
             if (this.controls.cannonBody.position.y < 2) {
-                // this.controls.unlock();
-                // alert('game_over');
+                this.controls.unlock();
+                alert('game_over');
+                window.location.href = "";
             }
         }
     
@@ -182,5 +204,3 @@ export class Core extends THREE.WebGLRenderer{
         this.render(this.scene, this.camera);
     }
 }
-
-const run = new Core();
