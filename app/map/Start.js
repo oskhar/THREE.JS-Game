@@ -1,12 +1,12 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
-import { PointerLockControlsCannon } from "./PointerLockControlsCannon.js";
-import { UserCamera } from './UserCamera.js';
-import { WorldScene } from './WorldScene.js';
-import { WorldPhysics } from './WorldPhysics.js';
+import { PointerLockControlsCannon } from "../PointerLockControlsCannon.js";
+import { UserCamera } from '../UserCamera.js';
+import { WorldScene } from '../WorldScene.js';
+import { WorldPhysics } from '../WorldPhysics.js';
 
 
-export class Core extends THREE.WebGLRenderer{
+class Core extends THREE.WebGLRenderer{
     constructor (listBox = [], listSphere = [], nextLevel) {
 
         // Set renderer (This class)
@@ -66,9 +66,6 @@ export class Core extends THREE.WebGLRenderer{
 
     setListener () {
         window.addEventListener('resize', this.onWindowResize.bind(this));
-        this.instructions.addEventListener('click', this.onClick.bind(this));
-        this.controls.addEventListener('lock', this.onLock.bind(this));
-        this.controls.addEventListener('unlock', this.onUnlock.bind(this));
     }
 
     setObjectBlender (listBox, listSphere) {
@@ -214,32 +211,51 @@ export class Core extends THREE.WebGLRenderer{
         const dt = time - this.lastCallTime;
         this.lastCallTime = time;
     
-        if (this.controls.enabled) {
+        // if (this.controls.enabled) {
             this.world.step(this.timeStep, dt);
     
             // Update box positions
             for (let i = 0; i < this.boxes.length; i++) {
                 this.boxMeshes[i].position.copy(this.boxes[i].position);
                 this.boxMeshes[i].quaternion.copy(this.boxes[i].quaternion);
-                if (this.boxes[i].role == "finish") {
-                    if (
-                        this.controls.cannonBody.position.y > this.boxes[i].position.y + 5 && this.controls.cannonBody.position.y < this.boxes[i].position.y + 8 &&
-                        this.controls.cannonBody.position.x > this.boxes[i].position.x - 5 && this.controls.cannonBody.position.x < this.boxes[i].position.x + 5 &&
-                        this.controls.cannonBody.position.z > this.boxes[i].position.z - 5 && this.controls.cannonBody.position.z < this.boxes[i].position.z + 5
-                        ) {
-                            alert('next level');
-                            window.location.href = this.nextLevel;
-                    }
-                }
             }
-            if (this.controls.cannonBody.position.y < 2) {
-                this.controls.unlock();
-                alert('game_over');
-                window.location.href = "";
-            }
-        }
+        // }
     
         this.controls.update(dt);
         this.render(this.scene, this.camera);
     }
 }
+
+const listMaterial = [new THREE.MeshStandardMaterial({ color: 0x00ffff }), new THREE.MeshStandardMaterial({ color: 0xE42E22 }), new THREE.MeshStandardMaterial({ color: 0x67F15B }), new THREE.MeshStandardMaterial({ color: 0xE4BA22 }), new THREE.MeshStandardMaterial({ color: 0x1868A1 }), new THREE.MeshStandardMaterial({ color: 0x92C8EF })];
+function getRandomNumber(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
+const listBox = [];
+const listSphere = [
+];
+for (let i = 0; i < 100; i++) {
+    listBox.push({
+        positionX: getRandomNumber(-10, 10),
+        positionY: getRandomNumber(20, 1000),
+        positionZ: getRandomNumber(-50, -10),
+        scaleX: getRandomNumber(1, 10),
+        scaleY: getRandomNumber(1, 10),
+        scaleZ: getRandomNumber(1, 10),
+        mass: 10,
+        damping: getRandomNumber(0.1, 0.9),
+        material: listMaterial[Math.floor(getRandomNumber(0, listMaterial.length))],
+    });
+    listSphere.push({
+            positionX: getRandomNumber(-10, 10),
+            positionY: getRandomNumber(20, 1000),
+            positionZ: getRandomNumber(-50, -10),
+            scale: getRandomNumber(1, 10),
+            mass: 10,
+            damping: getRandomNumber(0.1, 0.9),
+            material: listMaterial[Math.floor(getRandomNumber(0, listMaterial.length))],
+    });
+}
+const nextLevel = "Level_5.html";
+
+const play = new Core(listBox, listSphere, nextLevel);

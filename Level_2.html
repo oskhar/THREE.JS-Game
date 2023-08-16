@@ -9,19 +9,19 @@
 </head>
 
 <body>
-    <audio src="assets/backsounds/start.mp3" id="startAudio"></audio>
     <!-- https://unpkg.com/three@0.122.0/build/three.module.js -->
     <!-- ./node_modules/three/build/three.module.js -->
     <script type="importmap">{ "imports": {
             "three": "https://unpkg.com/three@0.122.0/build/three.module.js",
             "cannon-es": "https://unpkg.com/cannon-es/dist/cannon-es.js"
     }}</script>
-    <a href="Level_0.html" id="instructions">
-        <span>Start Game?</span
-    </a>
+    <div id="instructions">
+        <span>Klik untuk bermain</span>
+        <br />
+        (W,A,S,D = Bergerak, SPACE = Lompat, MOUSE = Mengalihkan pandangan)
+    </div>
     <!-- <script type="module" src="app/PointerLockControlsCannon.js"></script> -->
-    <script type="module" src="app/map/Start.js"></script>
-    <script>window.onload = () => {document.getElementById('startAudio').play()}</script>
+    <script type="module" src="app/map/Level_2.js"></script>
 </body>
 
 </html>

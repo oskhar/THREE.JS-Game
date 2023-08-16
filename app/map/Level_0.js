@@ -11,9 +11,9 @@ const materialSkyBlue = new THREE.MeshStandardMaterial({ color: 0x92C8EF });
 const listBox = [
     {
         role: 'finish',
-        positionX: 0,
+        positionX: -10,
         positionY: 5,
-        positionZ: -60,
+        positionZ: -40,
         scaleX: 10,
         scaleY: 10,
         scaleZ: 10,
@@ -41,28 +41,9 @@ const listBox = [
         mass: 0,
         material: materialBlue,
     },
-    {
-        positionX: -20,
-        positionY: 10,
-        positionZ: -30,
-        rotationZ: Math.PI / 4,
-        scaleX: 10,
-        scaleY: 10,
-        scaleZ: 10,
-        mass: 0,
-        material: materialBlue,
-    },
 ];
 const listSphere = [
-    // {
-    //     positionX: 0,
-    //     positionY: 30,
-    //     positionZ: -5,
-    //     scale: 10,
-    //     mass: 300,
-    //     material: materialGreen,
-    //     gravity: 10,
-    // }
 ];
+const nextLevel = "Level_1.html";
 
-const play = new Core(listBox, listSphere);
+const play = new Core(listBox, listSphere, nextLevel);
