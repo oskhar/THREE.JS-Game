@@ -44,27 +44,17 @@ const listBox = [
         positionX: 0,
         positionY: 16,
         positionZ: -12,
-        scaleX: 2,
+        scaleX: 10,
         scaleY: 2,
         scaleZ: 2,
         mass: 0,
         material: materialGreen,
-    },
-    {
-        positionX: 0,
-        positionY: 17,
-        positionZ: -15,
-        scaleX: 2,
-        scaleY: 4.5,
-        scaleZ: 2,
-        mass: 0,
-        material: materialYellow,
     },
     {
         positionX: 0,
         positionY: 16,
-        positionZ: -20,
-        scaleX: 2,
+        positionZ: -16,
+        scaleX: 10,
         scaleY: 2,
         scaleZ: 2,
         mass: 0,
@@ -73,8 +63,8 @@ const listBox = [
     {
         positionX: 0,
         positionY: 10,
-        positionZ: -30,
-        rotationZ: Math.PI / 4,
+        positionZ: -37,
+        rotationX: Math.PI / 4,
         scaleX: 10,
         scaleY: 10,
         scaleZ: 10,
@@ -82,20 +72,9 @@ const listBox = [
         material: materialBlue,
     },
     {
-        positionX: -20,
-        positionY: 10,
-        positionZ: -40,
-        rotationZ: Math.PI / 4,
-        scaleX: 10,
-        scaleY: 10,
-        scaleZ: 10,
-        mass: 0,
-        material: materialBlue,
-    },
-    {
-        positionX: -10,
-        positionY: 10,
-        positionZ: -60,
+        positionX: 0,
+        positionY: 11,
+        positionZ: -45,
         scaleX: 10,
         scaleY: 10,
         scaleZ: 15,
@@ -125,6 +104,6 @@ const listBox = [
 ];
 const listSphere = [
 ];
-const nextLevel = "Level_2.html";
+const nextLevel = "Level_3.html";
 
 const play = new Core(listBox, listSphere, nextLevel);
