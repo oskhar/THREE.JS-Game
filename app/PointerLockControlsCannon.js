@@ -146,6 +146,7 @@ class PointerLockControlsCannon extends THREE.EventDispatcher {
         case 'Space':
           if (this.canJump) {
             this.velocity.y = this.jumpVelocity
+            document.getElementById('jumpAudio').play();
           }
           this.canJump = false
           break
