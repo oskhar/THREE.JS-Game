@@ -5,8 +5,9 @@ import { UserCamera } from './UserCamera.js';
 import { WorldScene } from './WorldScene.js';
 import { WorldPhysics } from './WorldPhysics.js';
 
+
 export class Core extends THREE.WebGLRenderer{
-    constructor (listBox) {
+    constructor (listBox = [], listSphere = []) {
 
         // Set renderer (This class)
         super({ antialias: true });
@@ -33,7 +34,7 @@ export class Core extends THREE.WebGLRenderer{
         // Runing setter method
         this.setControls();
         this.setListener();
-        this.setObjectBlender(listBox);
+        this.setObjectBlender(listBox, listSphere);
         this.animate();
     }
 
@@ -69,10 +70,13 @@ export class Core extends THREE.WebGLRenderer{
         this.controls.addEventListener('unlock', this.onUnlock.bind(this));
     }
 
-    setObjectBlender (listBox) {
+    setObjectBlender (listBox, listSphere) {
 
         for (let i = 0; i < listBox.length; i++) {
             this.createBox(listBox[i]);
+        }
+        for (let i = 0; i < listSphere.length; i++) {
+            this.createSphere(listSphere[i]);
         }
         // Add linked boxes
         const size = 0.5
@@ -127,6 +131,7 @@ export class Core extends THREE.WebGLRenderer{
     createBox (paramObject) {
         // Set default parameter
         const defaultParam = {
+            role: 'normal',
             positionX: 0,
             positionY: 0,
             positionZ: 0,
@@ -137,6 +142,7 @@ export class Core extends THREE.WebGLRenderer{
             scaleY: 2,
             scaleZ: 2,
             mass: 5,
+            damping: 0.01,
             material: this.scene.materialA,
             gravity: -9.81,
         }
@@ -144,10 +150,17 @@ export class Core extends THREE.WebGLRenderer{
         
         // Add normal boxes
         const halfExtents = new CANNON.Vec3(0.5 * fixParam.scaleX, 0.5 * fixParam.scaleY, 0.5 * fixParam.scaleZ)
-        const boxShape = new CANNON.Box(halfExtents)
+        const boxShape = new CANNON.Box(halfExtents);
+        console.log(halfExtents);
         const boxGeometry = new THREE.BoxGeometry(halfExtents.x * 2, halfExtents.y * 2, halfExtents.z * 2)
-        const boxBody = new CANNON.Body({ mass: fixParam.mass })
-        boxBody.addShape(boxShape);
+        const boxBody = new CANNON.Body({ 
+            mass: fixParam.mass, 
+            shape: boxShape 
+        });
+        // Mengatur damping linear
+        boxBody.linearDamping = fixParam.damping;
+        boxBody.angularDamping = fixParam.damping;
+        boxBody.role = fixParam.role;
         const boxMesh = new THREE.Mesh(boxGeometry, fixParam.material)
 
         // Set position
@@ -156,8 +169,6 @@ export class Core extends THREE.WebGLRenderer{
             fixParam.positionY,
             fixParam.positionZ
         );
-        const customGravity = new CANNON.Vec3(0, -0.01, 0); // Ubah kecepatan jatuh sesuai dengan kebutuhan Anda
-        boxBody.applyForce(customGravity, boxBody.position);
         boxMesh.position.copy(boxBody.position);
 
         const rotationQuaternion = new CANNON.Quaternion();
@@ -173,9 +184,66 @@ export class Core extends THREE.WebGLRenderer{
         boxMesh.receiveShadow = true
 
         this.world.addBody(boxBody)
+
         this.scene.add(boxMesh)
         this.boxes.push(boxBody)
         this.boxMeshes.push(boxMesh)
+    }
+    
+    createSphere(paramObject) {
+        // Set default parameters
+        const defaultParam = {
+            role: 'normal',
+            positionX: 0,
+            positionY: 0,
+            positionZ: 0,
+            rotationX: 0,
+            rotationY: 0,
+            rotationZ: 0,
+            scale: 2,
+            mass: 5,
+            material: this.scene.materialA,
+            gravity: -9.81,
+        };
+    
+        const fixedParam = Object.assign(defaultParam, paramObject);
+    
+        // Create Cannon.js sphere
+        const sphereShape = new CANNON.Sphere(fixedParam.scale); // Use the average scale for radius
+        const sphereBody = new CANNON.Body({
+            mass: fixedParam.mass,
+            shape: sphereShape,
+        });
+    
+        sphereBody.position.set(
+            fixedParam.positionX,
+            fixedParam.positionY,
+            fixedParam.positionZ
+        );
+    
+        const rotationQuaternion = new CANNON.Quaternion();
+        rotationQuaternion.setFromAxisAngle(new CANNON.Vec3(
+            fixedParam.rotationX,
+            fixedParam.rotationY,
+            fixedParam.rotationZ
+        ), Math.PI / 4);
+        sphereBody.quaternion.copy(rotationQuaternion);
+    
+        this.world.addBody(sphereBody);
+    
+        // Create Three.js sphere
+        const sphereGeometry = new THREE.SphereGeometry(fixedParam.scale, 32, 32);
+        const sphereMesh = new THREE.Mesh(sphereGeometry, fixedParam.material);
+    
+        sphereMesh.position.copy(sphereBody.position);
+        sphereMesh.quaternion.copy(sphereBody.quaternion);
+    
+        sphereMesh.castShadow = true;
+        sphereMesh.receiveShadow = true;
+    
+        this.scene.add(sphereMesh);
+        this.boxes.push(sphereBody);
+        this.boxMeshes.push(sphereMesh);
     }
 
     animate () {
@@ -192,6 +260,16 @@ export class Core extends THREE.WebGLRenderer{
             for (let i = 0; i < this.boxes.length; i++) {
                 this.boxMeshes[i].position.copy(this.boxes[i].position);
                 this.boxMeshes[i].quaternion.copy(this.boxes[i].quaternion);
+                if (this.boxes[i].role == "finish") {
+                    console.log((this.controls.cannonBody.position.y > this.boxes[i].position.y && this.controls.cannonBody.position.y < this.boxes[i].position.y + 10) + " - " + (this.controls.cannonBody.position.x > this.boxes[i].position.x - 10 && this.controls.cannonBody.position.x < this.boxes[i].position.x + 10) + " - " + (this.controls.cannonBody.position.z > this.boxes[i].position.z - 10 && this.controls.cannonBody.position.z < this.boxes[i].position.z + 10));
+                    if (
+                        this.controls.cannonBody.position.y > this.boxes[i].position.y && this.controls.cannonBody.position.y < this.boxes[i].position.y + 8 &&
+                        this.controls.cannonBody.position.x > this.boxes[i].position.x - 10 && this.controls.cannonBody.position.x < this.boxes[i].position.x + 10 &&
+                        this.controls.cannonBody.position.z > this.boxes[i].position.z - 10 && this.controls.cannonBody.position.z < this.boxes[i].position.z + 10
+                        ) {
+                            alert('next');
+                    }
+                }
             }
             if (this.controls.cannonBody.position.y < 2) {
                 this.controls.unlock();
