@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <audio src="assets/soundeffects/00_jump.mp3" id="jumpAudio"></audio>
+    <audio src="assets/backsounds/start.mp3" id="startAudio"></audio>
     <!-- https://unpkg.com/three@0.122.0/build/three.module.js -->
     <!-- ./node_modules/three/build/three.module.js -->
     <script type="importmap">{ "imports": {
@@ -17,12 +17,20 @@
             "cannon-es": "https://unpkg.com/cannon-es/dist/cannon-es.js"
     }}</script>
     <div id="instructions">
-        <span>Klik untuk bermain</span>
-        <br />
-        (W,A,S,D = Bergerak, SPACE = Lompat, MOUSE = Mengalihkan pandangan)
+        <button onclick="playMusic()" style="padding: 1rem; z-index: 999;">Music?</button>
+        <a href="Level_0.html">
+            <span>🎉🎉 Selamat kamu telah menamatkan game ini!! 🎉🎉</span><br>
+            Restart game?
+        </a>
     </div>
     <!-- <script type="module" src="app/PointerLockControlsCannon.js"></script> -->
-    <script type="module" src="app/map/Level_2.js"></script>
+    <script type="module" src="app/map/Start.js"></script>
+    <script>
+        function playMusic () {
+            document.getElementById('startAudio').play();
+        }
+        window.onload = playMusic;
+    </script>
 </body>
 
 </html>

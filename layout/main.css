@@ -22,5 +22,17 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 #instructions span {
+    color: white;
+}
+#instructions span {
     font-size: 40px;
+}
+button {
+    position: fixed;
+    left: 1rem;
+    top: 1rem;
+    background-color: transparent;
+    border: 2px solid white;
+    border-radius: 5px;
+    color: white;
 }

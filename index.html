@@ -16,12 +16,20 @@
             "three": "https://unpkg.com/three@0.122.0/build/three.module.js",
             "cannon-es": "https://unpkg.com/cannon-es/dist/cannon-es.js"
     }}</script>
-    <a href="Level_0.html" id="instructions">
-        <span>Start Game?</span
-    </a>
+    <div id="instructions">
+        <button onclick="playMusic()" style="padding: 1rem; z-index: 999;">Only play Music</button>
+        <a href="Level_0.html">
+            <span>Start Game?</span><br>
+        </a>
+    </div>
     <!-- <script type="module" src="app/PointerLockControlsCannon.js"></script> -->
     <script type="module" src="app/map/Start.js"></script>
-    <script>window.onload = () => {document.getElementById('startAudio').play()}</script>
+    <script>
+        function playMusic () {
+            document.getElementById('startAudio').play();
+        }
+        window.onload = playMusic;
+    </script>
 </body>
 
 </html>
