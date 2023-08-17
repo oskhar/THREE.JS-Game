@@ -33,10 +33,10 @@ const listBox = [
     {
         positionX: 0,
         positionY: 10,
-        positionZ: -15,
+        positionZ: -12,
         scaleX: 10,
         scaleY: 10,
-        scaleZ: 15,
+        scaleZ: 10,
         mass: 0,
         material: materialBlue,
     },
