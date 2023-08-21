@@ -31,6 +31,10 @@
     <script>
         function playMusic () {
             document.getElementById('startAudio').play();
+            if (window.innerWidth < window.innerHeight) {
+                alert("Control untuk mobile belum tersedia dan masih dalam tahap pengembangan");
+                window.location.href = "https:www.google.com";
+            }
         }
         window.onload = playMusic;
     </script>
