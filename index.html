@@ -38,12 +38,12 @@
         };
         function playMusic () {
             document.getElementById('startAudio').play();
-            if (mobileCheck()) {
-                alert("Control untuk mobile belum tersedia dan masih dalam tahap pengembangan");
-                window.location.href = "https:www.google.com";
-            }
         }
         window.onload = playMusic;
+        if (mobileCheck()) {
+            alert("Control untuk mobile belum tersedia dan masih dalam tahap pengembangan");
+            window.location.href = "https:www.google.com";
+        }
     </script>
 </body>
 
